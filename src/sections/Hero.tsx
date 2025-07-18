@@ -130,7 +130,7 @@ export const HeroSection = () => {
         </div>
         <div className="max-w-lg mx-auto">
           <h1 className="font-serif text-3xl md:text-5xl text-center mt-8 tracking-wide">
-            Hi! I'm Nathan 🚀
+            Hi! I&apos;m Nathan 🚀
           </h1>
           <p className="mt-4 text-center text-white/60 md:text-lg">
             I am a software developer with interest in AI/ML automation and

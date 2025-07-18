@@ -65,10 +65,10 @@ export const ContactSection = () => {
           <div className="flex flex-col md:flex-row gap-8 md:gap-16 items-center">
             <div>
               <h2 className="font-serif text-2xl md:text-3xl">
-                Let's Connect!
+                Let&apos;s Connect!
               </h2>
               <p className="text-sm mt-2 md:text-base">
-                I'm always interested in discussing new opportunities,
+                I&apos;m always interested in discussing new opportunities,
                 collaborating on projects, or just talking about tech. Feel free
                 to reach out!
               </p>

@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import LinkedInIcon from "@/assets/icons/linkedin.svg";
+import LinkedInIcon from "@/assets/icons/linkedIn.svg";
 
 export const Header = () => {
   const [activeItem, setActiveItem] = useState("Home");
@@ -74,7 +74,7 @@ export const Header = () => {
     handleScroll(); // Check initial position
 
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [pathname]);
+  }, [pathname, navItems]);
 
   return (
     <div className="flex justify-center items-center fixed top-3 w-full z-10">
