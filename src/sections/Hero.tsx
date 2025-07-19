@@ -171,7 +171,7 @@ export const HeroSection = () => {
             <LinkedInIcon className="w-6 h-6 fill-[url(#linkedin-hero-icon-gradient)]" />
           </a>
           <a
-            href="https://github.com/NathanChung4/NathanChung4"
+            href="https://github.com/NathanChung4"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center justify-center w-12 h-12 bg-white/10 backdrop-blur border border-white/15 rounded-full hover:bg-white/20 transition-colors"

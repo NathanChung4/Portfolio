@@ -7,7 +7,7 @@ const footerLinks = [
   },
   {
     title: "GitHub",
-    href: "https://github.com/NathanChung4/NathanChung4",
+    href: "https://github.com/NathanChung4",
   },
   {
     title: "Resume",
