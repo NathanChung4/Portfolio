@@ -9,16 +9,16 @@ export const Header = () => {
   const pathname = usePathname();
 
   const navItems = [
-    { name: "Home", href: pathname === '/articles' ? "/" : "#home", isInternal: pathname !== '/articles' },
-    { name: "Projects", href: pathname === '/articles' ? "/#projects" : "#projects", isInternal: pathname !== '/articles' },
-    { name: "About", href: pathname === '/articles' ? "/#about" : "#about", isInternal: pathname !== '/articles' },
-    { name: "Contact", href: pathname === '/articles' ? "/#contact" : "#contact", isInternal: pathname !== '/articles' },
-    //{ name: "Articles", href: "/articles", isInternal: false },
+    { name: "Home", href: pathname.startsWith('/articles') ? "/" : "#home", isInternal: !pathname.startsWith('/articles') },
+    { name: "Projects", href: pathname.startsWith('/articles') ? "/#projects" : "#projects", isInternal: !pathname.startsWith('/articles') },
+    { name: "About", href: pathname.startsWith('/articles') ? "/#about" : "#about", isInternal: !pathname.startsWith('/articles') },
+    { name: "Contact", href: pathname.startsWith('/articles') ? "/#contact" : "#contact", isInternal: !pathname.startsWith('/articles') },
+    { name: "Articles", href: "/articles", isInternal: false },
   ];
 
   useEffect(() => {
     // Set active item based on current pathname
-    if (pathname === '/articles') {
+    if (pathname.startsWith('/articles')) {
       setActiveItem("Articles");
       return;
     }
