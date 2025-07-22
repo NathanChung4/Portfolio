@@ -4,6 +4,7 @@ import BackIcon from "@/assets/icons/back.svg";
 import zachImage from "@/assets/images/zach.jpg";
 import etamImage from "@/assets/images/ETAM.png";
 import { Header } from "@/sections/Header";
+import { Footer } from "@/sections/Footer";
 
 export default function EtamGuidePage() {
   return (
@@ -49,12 +50,12 @@ export default function EtamGuidePage() {
               How I Made It Into Texas A&M Computer Science with a 3.6 GPA
             </h2>
             <p>
-              Getting into Texas A&M&apos;s Computer Science program through the ETAM
-              process is no easy feat—especially when, like me, you don&apos;t reach
-              the 3.75 GPA for automatic admission. If you&apos;re reading this as a
-              student feeling discouraged or overwhelmed, I hope sharing my real
-              journey will offer you hope, practical strategies, and a sense of
-              community.
+              Getting into Texas A&M&apos;s Computer Science program through the
+              ETAM process is no easy feat—especially when, like me, you
+              don&apos;t reach the 3.75 GPA for automatic admission. If
+              you&apos;re reading this as a student feeling discouraged or
+              overwhelmed, I hope sharing my real journey will offer you hope,
+              practical strategies, and a sense of community.
             </p>
 
             <div className="my-8"></div>
@@ -74,8 +75,8 @@ export default function EtamGuidePage() {
               Computer Science as their first-choice major for ETAM. Only 351
               were placed through auto-admit (GPA ≥ 3.75). The other 92 holistic
               review spots (across all choices) were highly competitive, showing
-              just how crucial your entire application becomes if you&apos;re not in
-              the auto-admit group.
+              just how crucial your entire application becomes if you&apos;re
+              not in the auto-admit group.
             </p>
 
             <div className="my-8"></div>
@@ -136,25 +137,26 @@ export default function EtamGuidePage() {
             </p>
             <div className="my-1.5"></div>
             <p>
-              <strong>Projects Make a Difference:</strong> If you don&apos;t land an
-              internship, don&apos;t worry! Personal projects, hackathons, or
-              anything you&apos;ve built counts. These show real-world application
-              and self-motivation.
+              <strong>Projects Make a Difference:</strong> If you don&apos;t
+              land an internship, don&apos;t worry! Personal projects,
+              hackathons, or anything you&apos;ve built counts. These show
+              real-world application and self-motivation.
             </p>
             <div className="my-1.5"></div>
             <p>
               <strong>Support from Others:</strong> Reaching out to friends who
-              had ETAM&apos;d before was absolutely crucial. Their advice on essays,
-              what they wished they&apos;d done differently, and tips for specific
-              classes made a huge difference in my preparation and confidence.
+              had ETAM&apos;d before was absolutely crucial. Their advice on
+              essays, what they wished they&apos;d done differently, and tips
+              for specific classes made a huge difference in my preparation and
+              confidence.
             </p>
 
             <div className="my-6"></div>
 
             <h3 className="text-2xl font-bold mb-4">Lows</h3>
             <p>
-              <strong>Missing Auto-Admit:</strong> Seeing my 3.6 GPA meant I&apos;d
-              have to compete holistically, which was daunting.
+              <strong>Missing Auto-Admit:</strong> Seeing my 3.6 GPA meant
+              I&apos;d have to compete holistically, which was daunting.
             </p>
             <div className="my-1.5"></div>
             <p>
@@ -164,10 +166,10 @@ export default function EtamGuidePage() {
             </p>
             <div className="my-1.5"></div>
             <p>
-              <strong>Juggling Commitments:</strong> Trying to do
-              everything, join every club, ace every exam, keep up with
-              friends, led me to the brink of burnout. I had to learn what to
-              prioritize, and that it&apos;s okay to ask for help.
+              <strong>Juggling Commitments:</strong> Trying to do everything,
+              join every club, ace every exam, keep up with friends, led me to
+              the brink of burnout. I had to learn what to prioritize, and that
+              it&apos;s okay to ask for help.
             </p>
 
             <div className="my-10"></div>
@@ -181,12 +183,12 @@ export default function EtamGuidePage() {
               1. Essays: Your Personal Pitch
             </h3>
             <p>
-              Internships provided great content, but if you don&apos;t have one,
-              highlight independent projects, hackathon work, or even class
+              Internships provided great content, but if you don&apos;t have
+              one, highlight independent projects, hackathon work, or even class
               assignments that challenged you. Be specific about what you
               learned and how it fuels your goals. Don&apos;t just say you love
-              coding—show how you&apos;ve demonstrated that passion, learned from
-              challenges, and grown over time.{" "}
+              coding—show how you&apos;ve demonstrated that passion, learned
+              from challenges, and grown over time.{" "}
               <a
                 href="/etamessays.pdf"
                 className="text-emerald-400 hover:text-emerald-300 underline"
@@ -198,7 +200,9 @@ export default function EtamGuidePage() {
               to see these strategies in action.
             </p>
             <div className="my-3"></div>
-            <p><strong>Use the essay to:</strong></p>
+            <p>
+              <strong>Use the essay to:</strong>
+            </p>
             <ul className="list-disc list-outside ml-6 space-y-2 pl-0">
               <li>Show genuine passion for computer science and learning.</li>
               <li>
@@ -213,7 +217,8 @@ export default function EtamGuidePage() {
               <li>
                 Use the additional information essay to share context about your
                 journey, any obstacles overcome, or lessons learned outside the
-                classroom. These insights can be just as impactful as your grades.
+                classroom. These insights can be just as impactful as your
+                grades.
               </li>
             </ul>
 
@@ -225,8 +230,8 @@ export default function EtamGuidePage() {
             <p>
               Select 2-3 organizations that excite you and go deep—seek
               leadership, pitch project ideas, or help plan events. Depth beats
-              breadth. Hackathons and coding competitions help you gain skills and create
-              mini-projects for your portfolio (and essays!).
+              breadth. Hackathons and coding competitions help you gain skills
+              and create mini-projects for your portfolio (and essays!).
             </p>
 
             <div className="my-6"></div>
@@ -235,8 +240,8 @@ export default function EtamGuidePage() {
               3. Network and Seek Advice
             </h3>
             <p>
-              Don&apos;t underestimate the power of friends who&apos;ve been through ETAM.
-              Ask about:
+              Don&apos;t underestimate the power of friends who&apos;ve been
+              through ETAM. Ask about:
             </p>
             <div className="my-1"></div>
             <ul className="list-disc list-outside ml-6 space-y-2 pl-0">
@@ -267,9 +272,9 @@ export default function EtamGuidePage() {
               5. Balance and Self-Care
             </h3>
             <p>
-              Don&apos;t try to do it all at once. Balancing academics with a social
-              life and self-care leads to better performance and less burnout.
-              It&apos;s easy to forget this, but it truly matters.
+              Don&apos;t try to do it all at once. Balancing academics with a
+              social life and self-care leads to better performance and less
+              burnout. It&apos;s easy to forget this, but it truly matters.
             </p>
 
             <div className="my-10"></div>
@@ -278,11 +283,11 @@ export default function EtamGuidePage() {
               If You Don&apos;t Get In: It&apos;s Not the End
             </h2>
             <p>
-              If you don&apos;t make it into Computer Science, it doesn&apos;t close the
-              door on a tech career or a fulfilling college experience. Texas
-              A&M has excellent departments in Data Engineering, Computer
-              Engineering, Electrical Engineering, and more, where you can
-              develop strong technical skills.
+              If you don&apos;t make it into Computer Science, it doesn&apos;t
+              close the door on a tech career or a fulfilling college
+              experience. Texas A&M has excellent departments in Data
+              Engineering, Computer Engineering, Electrical Engineering, and
+              more, where you can develop strong technical skills.
             </p>
             <div className="my-3"></div>
             <p>Other options:</p>
@@ -336,13 +341,14 @@ export default function EtamGuidePage() {
             <div className="my-8"></div>
 
             <p>
-              If you&apos;re trying for ETAM, keep going. Reach out, ask for advice,
-              do the work, and trust in your journey. You&apos;ve absolutely got
-              this.
+              If you&apos;re trying for ETAM, keep going. Reach out, ask for
+              advice, do the work, and trust in your journey. You&apos;ve
+              absolutely got this.
             </p>
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }
