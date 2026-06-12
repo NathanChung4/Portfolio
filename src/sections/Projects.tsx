@@ -1,50 +1,81 @@
-import darkSaasLandingPage from "@/assets/images/dark-saas-landing-page.png";
-import lightSaasLandingPage from "@/assets/images/light-saas-landing-page.png";
-import aiStartupLandingPage from "@/assets/images/ai-startup-landing-page.png";
+import docagentImage from "@/assets/images/docagent.png";
+import telemetryBenchImage from "@/assets/images/telemetry-bench.png";
 import imageTwo from "@/assets/images/imageDos.png";
-import Image from "next/image";
+import Image, { type StaticImageData } from "next/image";
 import CheckCircleIcon from "@/assets/icons/check-circle.svg";
 import ArrowUpRightIcon from "@/assets/icons/arrow-up-right.svg";
 import grainImage from "@/assets/images/grain.jpg";
 import { SectionHeader } from "@/components/SectionHeader";
 import { Card } from "@/components/Card";
 
-const portfolioProjects = [
+type PortfolioProject = {
+  company: string;
+  title: string;
+  results: { title: string }[];
+  link: string;
+  buttonText: string;
+  repoLink?: string;
+  image: StaticImageData;
+};
+
+const portfolioProjects: PortfolioProject[] = [
+  {
+    company: "Personal Project",
+    title: "DocAgent",
+    results: [
+      {
+        title:
+          "Full-stack RAG system on async FastAPI + Postgres/pgvector with streaming answers, source citations, and validated agentic tool use",
+      },
+      {
+        title:
+          "239 tests running against real Postgres in CI, with a 50-question eval suite gating PRs on quality regression (93% answer correctness)",
+      },
+      {
+        title:
+          "Dockerized and deployed as a public live demo on Hugging Face Spaces with sub-500ms first-token latency",
+      },
+    ],
+    link: "https://huggingface.co/spaces/nathanwjchung/docagent",
+    buttonText: "Try Live Demo",
+    repoLink: "https://github.com/NathanChung4/docagent",
+    image: docagentImage,
+  },
+  {
+    company: "Personal Project",
+    title: "TelemetryBench",
+    results: [
+      {
+        title:
+          "Containerized full-stack app (FastAPI + Streamlit + SQLAlchemy/SQLite) that ingests raw DAQ CSVs from hardware parameter sweeps",
+      },
+      {
+        title:
+          "8 REST endpoints for sweep ingestion, multi-run comparison, time-series queries, and anomaly scoring",
+      },
+      {
+        title:
+          "ML-based run-quality scoring with a scikit-learn Isolation Forest that catches drift cases static thresholds miss",
+      },
+    ],
+    link: "https://github.com/NathanChung4/telemetry-bench",
+    buttonText: "View on GitHub",
+    image: telemetryBenchImage,
+  },
   {
     company: "Arkane Digital",
-    title: "Arkane Digital Website Enhancement",
+    title: "Arkane Digital Website",
     results: [
       { title: "Helped build the official Arkane Digital website" },
-      //{ title: "Improved site speed by 50%" },
-      { title: "Not open source" },
+      {
+        title:
+          "Shipped during my software engineering internship using the Raikoo design-to-code platform",
+      },
     ],
     link: "https://www.arkanedigital.com/",
+    buttonText: "Visit Live Site",
     image: imageTwo,
   },
-  /*
-  {
-    company: "Innovative Co",
-    title: "Light Saas Landing Page",
-    results: [
-      { title: "Boosted sales by 20%" },
-      { title: "Expanded customer reach by 35%" },
-      { title: "Increased brand awareness by 15%" },
-    ],
-    link: "https://youtu.be/7hi5zwO75yc",
-    image: lightSaasLandingPage,
-  },
-  {
-    company: "Quantum Dynamics",
-    title: "AI Startup Landing Page",
-    results: [
-      { title: "Enhanced user experience by 40%" },
-      { title: "Improved site speed by 50%" },
-      { title: "Increased mobile traffic by 35%" },
-    ],
-    link: "https://youtu.be/Z7I5uSRHMHg",
-    image: aiStartupLandingPage,
-  },
-  */
 ];
 
 export const ProjectsSection = () => {
@@ -82,16 +113,30 @@ export const ProjectsSection = () => {
                       </li>
                     ))}
                   </ul>
-                  <a
-                    href={project.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <button className="bg-white text-gray-950 h-12 w-full md:w-auto px-6 rounded-xl font-semibold inline-flex items-center justify-center gap-2 mt-8 transition duration-200 hover:-translate-y-1 hover:shadow-lg hover:shadow-emerald-300/50">
-                      <span>Visit Live Site</span>
-                      <ArrowUpRightIcon className="size-4" />
-                    </button>
-                  </a>
+                  <div className="flex flex-col md:flex-row gap-4 mt-8">
+                    <a
+                      href={project.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <button className="bg-white text-gray-950 h-12 w-full md:w-auto px-6 rounded-xl font-semibold inline-flex items-center justify-center gap-2 transition duration-200 hover:-translate-y-1 hover:shadow-lg hover:shadow-emerald-300/50">
+                        <span>{project.buttonText}</span>
+                        <ArrowUpRightIcon className="size-4" />
+                      </button>
+                    </a>
+                    {project.repoLink && (
+                      <a
+                        href={project.repoLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <button className="border border-white/15 h-12 w-full md:w-auto px-6 rounded-xl font-semibold inline-flex items-center justify-center gap-2 transition duration-200 hover:-translate-y-1 hover:shadow-lg hover:shadow-emerald-300/50">
+                          <span>View Code</span>
+                          <ArrowUpRightIcon className="size-4" />
+                        </button>
+                      </a>
+                    )}
+                  </div>
                 </div>
                 <div className="relative">
                   <Image

@@ -124,7 +124,7 @@ export const HeroSection = () => {
               <div className="bg-green-500 absolute inset-0 animate-ping-large rounded-full"></div>
             </div>
             <div className="text-sm font-medium">
-              Available for new projects
+              SWE Intern @ AMD
             </div>
           </div>
         </div>
@@ -133,9 +133,9 @@ export const HeroSection = () => {
             Hi! I&apos;m Nathan 🚀
           </h1>
           <p className="mt-4 text-center text-white/60 md:text-lg">
-            I am a software developer with interest in AI/ML automation and
-            quantitative development, focused on building scalable systems and
-            impactful applications.
+            Computer Science student at Texas A&amp;M and software engineer
+            intern at AMD, building AI-powered tools, backend systems, and
+            full-stack applications.
           </p>
         </div>
         <div className="flex flex-col md:flex-row justify-center items-center mt-8 gap-4">

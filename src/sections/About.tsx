@@ -8,8 +8,6 @@ import nextArrow from "@/assets/icons/next.svg";
 import backArrow from "@/assets/icons/back.svg";
 import Image from "next/image";
 import JavascriptIcon from "@/assets/icons/square-js.svg";
-import HtmlIcon from "@/assets/icons/html5.svg";
-import CssIcon from "@/assets/icons/css3.svg";
 import ReactIcon from "@/assets/icons/react.svg";
 import pythonIcon from "@/assets/icons/python-gradient.svg";
 import cPlusPlusIcon from "@/assets/icons/cPlusPlus-gradient.svg";
@@ -18,6 +16,12 @@ import gitIcon from "@/assets/icons/git-gradient.svg";
 import cSharpIcon from "@/assets/icons/cSharp-gradient.svg";
 import typeScriptIcon from "@/assets/icons/typescript-gradient.svg";
 import nextjsIcon from "@/assets/icons/nextjs.svg";
+import fastApiIcon from "@/assets/icons/fastapi.svg";
+import dockerIcon from "@/assets/icons/docker.svg";
+import postgresIcon from "@/assets/icons/postgresql.svg";
+import scikitLearnIcon from "@/assets/icons/scikitlearn.svg";
+import githubActionsIcon from "@/assets/icons/githubactions.svg";
+import tailwindIcon from "@/assets/icons/tailwindcss.svg";
 import Keller from "@/assets/images/mapOne.png"
 import smileImage from "@/assets/images/smile.png";
 import { CardHeader } from "@/components/CardHeader";
@@ -27,48 +31,64 @@ import { useRef, useEffect, useState, useCallback } from "react";
 
 const toolboxItems = [
   {
+    title: "Python",
+    iconType: pythonIcon,
+  },
+  {
+    title: "FastAPI",
+    iconType: fastApiIcon,
+  },
+  {
+    title: "Docker",
+    iconType: dockerIcon,
+  },
+  {
+    title: "PostgreSQL",
+    iconType: postgresIcon,
+  },
+  {
+    title: "scikit-learn",
+    iconType: scikitLearnIcon,
+  },
+  {
+    title: "TypeScript",
+    iconType: typeScriptIcon,
+  },
+  {
     title: "JavaScript",
     iconType: JavascriptIcon,
-  },
-  {
-    title: "HTML5",
-    iconType: HtmlIcon,
-  },
-  {
-    title: "CSS3",
-    iconType: CssIcon,
   },
   {
     title: "React",
     iconType: ReactIcon,
   },
   {
-    title: "Python",
-    iconType: pythonIcon,
-  },
-  {
-    title: "C++",
-    iconType: cPlusPlusIcon,
-  },
-  {
     title: "Next.js",
     iconType: nextjsIcon,
   },
   {
-    title: "Java",
-    iconType: javaIcon,
+    title: "TailwindCSS",
+    iconType: tailwindIcon,
   },
   {
     title: "Git",
     iconType: gitIcon,
   },
   {
-    title: "C#",
-    iconType: cSharpIcon,
+    title: "GitHub Actions",
+    iconType: githubActionsIcon,
   },
   {
-    title: "TypeScript",
-    iconType: typeScriptIcon,
+    title: "Java",
+    iconType: javaIcon,
+  },
+  {
+    title: "C++",
+    iconType: cPlusPlusIcon,
+  },
+  {
+    title: "C#",
+    iconType: cSharpIcon,
   },
 ];
 
@@ -177,7 +197,7 @@ export const AboutSection = () => {
         <SectionHeader
           title="A Glimpse Into My World"
           subtitle="About Me"
-          description="Learn more about who I am, what I do, and what inspires me."
+          description="I grew up in Keller, Texas, and I'm now studying Computer Science at Texas A&M while interning at AMD in Austin. Outside of code, I'm usually playing basketball, cooking, or reading."
         />
         <div className="mt-20 flex flex-col gap-8">
           <div className="grid grid-cols-1 gap-8 md:grid-cols-5 md:gap-8 lg:grid-cols-3">

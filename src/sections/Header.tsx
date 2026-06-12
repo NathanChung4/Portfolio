@@ -10,6 +10,7 @@ export const Header = () => {
 
   const navItems = [
     { name: "Home", href: pathname.startsWith('/articles') ? "/" : "#home", isInternal: !pathname.startsWith('/articles') },
+    { name: "Experience", href: pathname.startsWith('/articles') ? "/#experience" : "#experience", isInternal: !pathname.startsWith('/articles') },
     { name: "Projects", href: pathname.startsWith('/articles') ? "/#projects" : "#projects", isInternal: !pathname.startsWith('/articles') },
     { name: "About", href: pathname.startsWith('/articles') ? "/#about" : "#about", isInternal: !pathname.startsWith('/articles') },
     { name: "Contact", href: pathname.startsWith('/articles') ? "/#contact" : "#contact", isInternal: !pathname.startsWith('/articles') },

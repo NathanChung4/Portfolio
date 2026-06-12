@@ -23,7 +23,7 @@ export const Footer = () => {
       <div className="max-w-full px-11 relative z-10">
         <div className="py-6 text-sm flex flex-col md:flex-row justify-between items-center gap-4 md:gap-8">
           <div className="text-white/40">
-            &copy; 2025 Nathan Chung. All rights reserved.
+            &copy; 2026 Nathan Chung. All rights reserved.
           </div>
           <nav className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
             {footerLinks.map((link) => (

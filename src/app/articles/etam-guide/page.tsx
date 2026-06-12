@@ -51,7 +51,7 @@ export default function EtamGuidePage() {
             </h2>
             <p>
               Getting into Texas A&M&apos;s Computer Science program through the
-              ETAM process is no easy feat—especially when, like me, you
+              ETAM process is no easy feat, especially when, like me, you
               don&apos;t reach the 3.75 GPA for automatic admission. If
               you&apos;re reading this as a student feeling discouraged or
               overwhelmed, I hope sharing my real journey will offer you hope,
@@ -126,7 +126,7 @@ export default function EtamGuidePage() {
             <p>
               <strong>Building a Community:</strong> Finding organizations like
               Aggie Coding Club and Aggie AI Society gave me a sense of
-              belonging and tons of relevant experience—both for my essays and
+              belonging and tons of relevant experience, both for my essays and
               my personal growth.
             </p>
             <div className="my-1.5"></div>
@@ -187,7 +187,7 @@ export default function EtamGuidePage() {
               one, highlight independent projects, hackathon work, or even class
               assignments that challenged you. Be specific about what you
               learned and how it fuels your goals. Don&apos;t just say you love
-              coding—show how you&apos;ve demonstrated that passion, learned
+              coding. Show how you&apos;ve demonstrated that passion, learned
               from challenges, and grown over time.{" "}
               <a
                 href="/etamessays.pdf"
@@ -206,7 +206,7 @@ export default function EtamGuidePage() {
             <ul className="list-disc list-outside ml-6 space-y-2 pl-0">
               <li>Show genuine passion for computer science and learning.</li>
               <li>
-                Make your future ambitions clear—mentioning things like grad
+                Make your future ambitions clear. Mentioning things like grad
                 school or research involvement at TAMU shows you&apos;ve thought
                 ahead.
               </li>
@@ -228,7 +228,7 @@ export default function EtamGuidePage() {
               2. Strategic Involvement
             </h3>
             <p>
-              Select 2-3 organizations that excite you and go deep—seek
+              Select 2-3 organizations that excite you and go deep. Seek
               leadership, pitch project ideas, or help plan events. Depth beats
               breadth. Hackathons and coding competitions help you gain skills
               and create mini-projects for your portfolio (and essays!).
@@ -262,7 +262,7 @@ export default function EtamGuidePage() {
             <h3 className="text-2xl font-bold mb-4">4. Academic Performance</h3>
             <p>
               Aim for as high a GPA as you can, but know you&apos;re more than a
-              number. Constantly seek help—whether from friends, tutors, or
+              number. Constantly seek help, whether from friends, tutors, or
               professors if you&apos;re struggling.
             </p>
 

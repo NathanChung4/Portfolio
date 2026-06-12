@@ -13,7 +13,7 @@ const calistoga = Calistoga({
 
 export const metadata: Metadata = {
   title: "Nathan Chung - Portfolio",
-  description: "Software Developer specializing in AI/ML automation and quantitative development",
+  description: "Computer Science student at Texas A&M and software engineer intern at AMD, building AI-powered tools, backend systems, and full-stack applications",
 };
 
 export default function RootLayout({
