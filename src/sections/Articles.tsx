@@ -2,16 +2,38 @@ import { Card } from "@/components/Card";
 import { SectionHeader } from "@/components/SectionHeader";
 import ArrowUpRightIcon from "@/assets/icons/arrow-up-right.svg";
 import zachImage from "@/assets/images/zach.jpg";
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 
-const articles = [
+type Article = {
+  title: string;
+  description: string;
+  date: string;
+  readTime: string;
+  tags: string[];
+  link: string;
+  // Optional preview image. Articles without one render a gradient panel
+  // instead (see the card markup below).
+  image?: StaticImageData;
+};
+
+const articles: Article[] = [
+  {
+    title: "Eight Requests, One Dollar: Concurrency Bugs in a Double-Entry Ledger",
+    description:
+      "A wallet funded for one $7 transfer, hit by eight concurrent requests. Why a naive ledger lets all eight through — and the safeguards that fix it, in Go and PostgreSQL.",
+    date: "6/30/2026",
+    readTime: "11 min read",
+    tags: ["Go", "PostgreSQL", "Concurrency"],
+    link: "/articles/eight-requests-one-dollar",
+  },
   {
     title: "How I ETAMed into the Texas A&M Computer Science Program WITHOUT the Auto Admit G.P.A.",
     description: "How I got into CS without the 3.75 GPA requirement.",
     date: "7/1/2025",
     readTime: "8 min read",
     tags: ["AI/ML", "Architecture", "Scalability"],
-    link: "/articles/etam-guide"
+    link: "/articles/etam-guide",
+    image: zachImage,
   },
   /*
   {
@@ -49,6 +71,7 @@ export const ArticlesSection = () => {
                 <div className="lg:pb-16">
                   <div className="flex items-center gap-4 mb-4">
                     <time className="text-sm text-white/60">{article.date}</time>
+                    <span className="text-sm text-white/40">{article.readTime}</span>
                   </div>
                   <h3 className="font-serif text-2xl md:text-4xl font-medium mb-4">
                     {article.title}
@@ -65,11 +88,23 @@ export const ArticlesSection = () => {
                   </a>
                 </div>
                 <div className="relative mt-8 lg:mt-0">
-                  <Image
-                    src={zachImage}
-                    alt="Article preview"
-                    className="w-full h-64 md:h-80 lg:h-96 rounded-lg object-cover mb-8"
-                  />
+                  {article.image ? (
+                    <Image
+                      src={article.image}
+                      alt="Article preview"
+                      className="w-full h-64 md:h-80 lg:h-96 rounded-lg object-cover mb-8"
+                    />
+                  ) : (
+                    // Text/gradient preview for code-heavy posts without a photo.
+                    <div className="w-full h-64 md:h-80 lg:h-96 rounded-lg mb-8 border border-white/10 bg-gradient-to-br from-emerald-500/20 via-sky-500/10 to-transparent flex flex-col items-center justify-center gap-3 p-6 text-center">
+                      <span className="font-mono text-base md:text-lg text-emerald-300">
+                        1 success · 7 × 422 · 0 errors
+                      </span>
+                      <span className="font-mono text-xs text-white/40">
+                        under -race
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
             </Card>

@@ -1,5 +1,20 @@
+import createMDX from "@next/mdx";
+import remarkGfm from "remark-gfm";
+import rehypePrettyCode from "rehype-pretty-code";
+
+// Syntax-highlighting theme for fenced code blocks in MDX articles.
+// github-dark reads well on the site's gray-900 background.
+/** @type {import('rehype-pretty-code').Options} */
+const prettyCodeOptions = {
+  theme: "github-dark",
+  keepBackground: true,
+};
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Allow .md/.mdx alongside the usual page/component extensions so article
+  // content can be authored in Markdown.
+  pageExtensions: ["ts", "tsx", "js", "jsx", "md", "mdx"],
   webpack(config) {
     // Grab the existing rule that handles SVG imports
     const fileLoaderRule = config.module.rules.find((rule) =>
@@ -45,4 +60,13 @@ const nextConfig = {
   },
 };
 
-export default nextConfig;
+// Wrap the config with MDX support: remark-gfm for GitHub-flavored tables,
+// rehype-pretty-code for shiki syntax highlighting of Go/SQL blocks.
+const withMDX = createMDX({
+  options: {
+    remarkPlugins: [remarkGfm],
+    rehypePlugins: [[rehypePrettyCode, prettyCodeOptions]],
+  },
+});
+
+export default withMDX(nextConfig);

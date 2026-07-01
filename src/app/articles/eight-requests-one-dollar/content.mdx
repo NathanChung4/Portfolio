@@ -1,0 +1,268 @@
+I built a [financial transaction engine](https://github.com/NathanChung4/financial-transaction-engine)
+in Go and PostgreSQL — an immutable double-entry ledger with idempotent,
+concurrency-safe transfers. The interesting part of that project isn't the
+features; it's a single question that every payments system has to answer and
+most tutorials quietly get wrong:
+
+**What happens when two requests touch the same money at the same time?**
+
+Here's the smallest version of the problem. Take a wallet funded with exactly
+enough for one transfer — say $7 — and fire eight identical "send $7" requests at
+it concurrently. How many succeed?
+
+The answer you want is *one*. The answer a naive implementation gives is *eight*.
+This post is about why, and about the handful of safeguards that turn the second
+answer back into the first — each one demonstrated by deliberately removing it and
+watching the system break.
+
+## The setup
+
+The engine is a wallet-to-wallet transfer API on a double-entry ledger:
+
+- Money is stored as `int64` **cents** (amounts positive; a `direction` of
+  `debit`/`credit` carries the sign). No floats, ever.
+- Every transfer writes a **balanced journal entry** — equal debits and credits —
+  and the ledger is **append-only**: no `UPDATE`, no `DELETE`. A reversal isn't an
+  edit; it's a new compensating entry.
+- A wallet's balance is `SUM(credits) − SUM(debits)` over its journal lines. For
+  O(1) reads, that sum is cached in a `balance_cents` column maintained by a
+  database trigger, so the cache is correct by construction rather than updated by
+  hand.
+- It's plain Go: stdlib `net/http`, the `pgx` driver, no ORM, no web framework.
+  Postgres runs at `READ COMMITTED` with explicit row locks.
+
+That's the whole stage. Every bug below lives in the few milliseconds where two
+transactions overlap.
+
+## An honest note up front
+
+I want to be straight about what this is. I did **not** stumble onto these bugs in
+production. The design was correct from the start — each safeguard traces to an
+architecture decision record. What I did was *engineer* the bug-hunt: for each
+hazard I wrote the **naive** version of the safeguard and a test that proves it
+fails, and parked it right next to the **shipped** version and a test that proves
+it's correct.
+
+The naive code lives only in `internal/ledger/bughunt_test.go` — a `_test.go` file
+that never compiles into the binary — so production stays correct while the tests
+document *why* each line is load-bearing. The value isn't "look, a bug." It's "I
+can remove any one of these guards and show you exactly how the system breaks."
+
+The other thing I cared about was that the demonstrations not depend on luck.
+Races are timing-dependent, so a test that fails "sometimes" proves nothing. Every
+naive path unblocks all its goroutines together behind a start barrier and sleeps
+in the race window (`raceWindow = 40ms`) so the failure reproduces on *every* run.
+The whole suite is stable under `go test -race -count=3`.
+
+## Bug B: eight requests pass a check that only one should
+
+Back to the $7 wallet and the eight concurrent transfers. The naive transfer reads
+the balance and then acts on it:
+
+```go
+// naive: read the balance, decide, then move the money
+var balance int64
+tx.QueryRow(ctx, `SELECT balance_cents FROM wallets WHERE id=$1`, from).Scan(&balance)
+if balance < amount {
+    return reject("insufficient_funds")
+}
+// ... insert the debit/credit legs ...
+```
+
+This is a textbook **check-then-act** race. Under `READ COMMITTED`, a plain
+`SELECT` takes no lock. All eight transactions read `balance_cents = 700` *before*
+any of them has committed a debit, so **all eight pass the funds check**. Every one
+of them believes it has the money.
+
+What happens next depends on how much defense you have left. In the shipped schema
+there's a partial constraint — `CHECK (type = 'treasury' OR balance_cents >= 0)` —
+as a last-resort backstop. With it in place, the eight debits race to commit, the
+first one wins, and the rest get aborted by the `CHECK` when they'd drive the
+balance negative. So no money is actually lost — but the *decision* was wrong:
+seven requests that should have received a clean rejection instead blow up with
+constraint errors. The test (`TestBugB_CheckThenActOverspend`) asserts exactly
+that failure.
+
+Then I remove the backstop too. There's a sub-test,
+`no_check_no_lock_persists_negative`, that drops the `CHECK` and reruns the race —
+and now the overspend **persists a negative balance** that survives the
+transaction. That's the real failure the two safeguards were protecting against:
+money created out of nothing.
+
+The fix is one clause:
+
+```go
+// shipped: read the balance under a row lock
+SELECT balance_cents FROM wallets WHERE id = $1 FOR UPDATE
+```
+
+`FOR UPDATE` makes the *check* safe. The first transaction locks the wallet row;
+the second blocks until the first commits, then re-reads the *fresh* committed
+balance — now $0 — and is correctly rejected. After the fix the same eight-request
+race produces **1 success, 7 clean `422 insufficient_funds`, 0 errors**, and the
+balance is never negative.
+
+The interview point I take from this: **the lock and the `CHECK` catch different
+things.** The lock makes the runtime decision correct. The `CHECK` is an
+independent backstop that prevents *corruption* if the lock is ever missing or
+wrong. Two layers, each guarding against a different failure — defense in depth,
+not redundancy.
+
+## Bug A: the same idempotency key, sixteen times
+
+Payments clients retry. A network blip, a timeout, an impatient user — the same
+"send $50" request arrives more than once, and the ledger must apply it **at most
+once**. The contract is an `Idempotency-Key` header: same key ⇒ one transfer, and
+every duplicate replays the original response.
+
+The naive implementation checks for the key, does the work, and records the key
+last:
+
+```
+1. SELECT ... WHERE key = $1      -- not seen before?
+2. ... perform the transfer ...
+3. INSERT INTO idempotency_keys   -- record it
+```
+
+Fire sixteen requests with the same key concurrently and all sixteen pass step 1
+before any of them reaches step 3. **Sixteen transfers commit. The destination
+receives 16× the money.** Same check-then-act shape as Bug B, different victim.
+
+The fix is to make the key claim *atomic with the work* and let the database's
+unique index be the mutual-exclusion primitive:
+
+```sql
+INSERT INTO idempotency_keys (key, request_method, request_path, request_hash, status)
+VALUES ($1, $2, $3, $4, 'in_progress')
+ON CONFLICT (key) DO NOTHING
+RETURNING key
+```
+
+This runs *inside* the transfer transaction. The first request to insert the row
+wins and proceeds. A concurrent duplicate's `INSERT` finds the key already there;
+`ON CONFLICT DO NOTHING` means it returns no row, and — because the winner's row is
+still uncommitted — the duplicate **blocks on that uncommitted row** until the
+winner commits, then replays the stored response. After the fix: **1 transfer + 15
+replays**, destination receives the amount once.
+
+A subtlety I like: a plain `INSERT` without `ON CONFLICT` would *also* prevent the
+double-spend — the unique constraint aborts the losers — but it surfaces a raw
+`unique_violation` error instead of clean idempotent semantics. `ON CONFLICT` is
+what turns a database conflict into a correct *replay*. Avoiding the double-spend
+is table stakes; returning the right thing to the client is the actual feature.
+
+## Bug A2: the right key, the wrong object
+
+Here's one that's easy to miss. Suppose you fingerprint the idempotency key by the
+request **body** only. Now consider a reversal: `POST /transfers/{id}/reversals`.
+The transfer to reverse is in the *path*; the body is **empty**.
+
+That means the body-only fingerprint is *identical for the reversal of every
+transfer in the system.* Reuse one key across `/transfers/A/reversals` and
+`/transfers/B/reversals` and they hash the same. The second call **replays the
+first's stored `201`** — so reversing transfer B silently does nothing (B stays
+`completed`), while the caller is told it succeeded. That's a correctness bug that
+loses money *quietly*, which is the worst kind.
+
+The fix is to fingerprint `method + normalized path + canonical body`, so the
+differing `{id}` in the path makes the fingerprints differ. A key reused across two
+different reversal paths now correctly returns a **`409 Conflict`** instead of a
+wrong-object replay. (`TestBugA2_PathBlindReversal` demonstrates the empty-body
+case, which is the starkest version of the trap.)
+
+## Bug C: two transfers that wait on each other forever
+
+Locking solves the check-then-act races — but locking introduces its own classic
+failure. A transfer locks two wallets. If it locks them in *request* order — `from`
+then `to` — then two opposing transfers deadlock:
+
+- Transfer **A→B** locks A, then reaches for B.
+- Transfer **B→A** locks B, then reaches for A.
+- Each holds what the other needs. Postgres detects the cycle and aborts a victim
+  with SQLSTATE `40P01`.
+
+The fix is to impose a **total order** on lock acquisition — always lock wallets in
+ascending `id` order, regardless of transfer direction, in a single statement:
+
+```sql
+SELECT id, balance_cents FROM wallets
+ WHERE id = ANY($1)
+ ORDER BY id
+ FOR UPDATE
+```
+
+If every transaction acquires locks in the same global order, a cycle is
+impossible by construction. After the fix, opposing A→B and B→A transfers both
+succeed with **0 deadlocks**. (Serialization and deadlock failures that *do* slip
+through — SQLSTATE `40001`/`40P01` — are retried with backoff before the request
+gives up with a `503`.)
+
+There's a fifth bug in the suite too — a balance-validation trigger that has to be
+`DEFERRABLE INITIALLY DEFERRED` so it checks the entry at `COMMIT`, once both legs
+exist, rather than rejecting the first leg of every balanced entry. Same shape as
+the rest: remove the safeguard, watch it break, put it back.
+
+## Does it actually hold up?
+
+A suite of "here's the bug, here's the fix" tests is only convincing if the shipped
+code survives real contention. The capstone test, `TestConcurrentInvariantsHold`,
+runs **200 concurrent transfers over five overlapping wallets** using only shipped
+code, under `-race`, and asserts three invariants afterward:
+
+- **Global conservation:** `SUM(debits) = SUM(credits)` across every journal line.
+- **Per-wallet reconciliation:** the cached `balance_cents` equals the ledger sum
+  for every wallet — the trigger-maintained cache never drifts.
+- **No negative user balances**, under any interleaving.
+
+Then I went looking for the ceiling with [k6 load
+tests](https://github.com/NathanChung4/financial-transaction-engine/blob/main/docs/BENCHMARKS.md).
+On an M2 Max with a 12-connection pool:
+
+| Workload | Throughput | p50 / p99 |
+|---|---|---|
+| **Disjoint** wallet pairs | **5,630 transfers/s** | 8.4 / 13.4 ms |
+| **Hot** wallet (shared source) | **1,604 transfers/s** | 30.5 / 39.0 ms |
+
+That gap is the whole story. Transfers across *disjoint* wallets never touch the
+same row lock, so they run in parallel — ~11× the 500/s target I set. Transfers out
+of one *hot* wallet must serialize on its `FOR UPDATE` lock, so throughput drops
+3.5× and latency rises. And the latency isn't mysterious: with the critical section
+running one-at-a-time at ~0.62 ms each, 50 concurrent clients queue behind the lock
+for ~50 × 0.62 ≈ 31 ms — which is almost exactly the measured p50 of 30.5 ms.
+
+I report the hot number proudly rather than hiding it, because **it's the cost of
+correctness, not a bug.** You cannot safely parallelize money leaving a single
+account; the serialization is the guarantee working. That trade-off — correctness
+over raw throughput — is the most defensible thing in the project.
+
+## What about crashes?
+
+The last question is what happens when a process dies mid-operation. I have a
+[chaos suite](https://github.com/NathanChung4/financial-transaction-engine/blob/main/docs/CHAOS.md)
+that `SIGKILL`s the real API and worker binaries under load and checks the ledger
+survives. Because a transfer is a single transaction that validates at `COMMIT`, a
+process killed before commit commits *nothing* — there's no schema state that can
+hold a half-applied transfer. The tests confirm it: kill the API mid-transfer and
+there are no partial writes, no orphaned idempotency locks, and retrying an
+in-flight request with its original key still yields exactly one transfer. Kill the
+delivery worker mid-webhook and the event is redelivered after restart — at-least-
+once, never lost.
+
+## What I'd defend in an interview
+
+Strip away the specifics and the project is really about three habits:
+
+1. **Layered defense.** The row lock makes the decision correct; the `CHECK`
+   constraint stops corruption if the lock is ever absent. Don't rely on one guard
+   to catch two different failures.
+2. **Correctness outranks throughput, and you should be able to prove both.** The
+   hot-wallet number is lower *on purpose*, and I can show you the benchmark that
+   measures it and the lock that causes it.
+3. **Evidence over claims.** Every safeguard has a test that fails without it.
+   Every performance number has a committed script. "It's concurrency-safe" is a
+   claim; `1 success, 7 clean rejections, 0 errors` under `-race -count=3` is
+   evidence.
+
+The code, the full bug-hunt, the benchmarks, and the chaos tests are all on
+[GitHub](https://github.com/NathanChung4/financial-transaction-engine). The naive
+versions are right there in the test files, waiting to be re-run.
