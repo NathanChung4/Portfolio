@@ -1,4 +1,5 @@
 import docagentImage from "@/assets/images/docagent.png";
+import financialTransactionEngineImage from "@/assets/images/financial-transaction-engine.png";
 import telemetryBenchImage from "@/assets/images/telemetry-bench.png";
 import imageTwo from "@/assets/images/imageDos.png";
 import Image, { type StaticImageData } from "next/image";
@@ -40,6 +41,27 @@ const portfolioProjects: PortfolioProject[] = [
     buttonText: "Try Live Demo",
     repoLink: "https://github.com/NathanChung4/docagent",
     image: docagentImage,
+  },
+  {
+    company: "Personal Project",
+    title: "Financial Transaction Engine",
+    results: [
+      {
+        title:
+          "Immutable double-entry ledger engine in Go with idempotent transfers/reversals and authorize→capture→release fund holds, race-detector-clean under concurrent load",
+      },
+      {
+        title:
+          "Found, root-caused, and fixed a real concurrency bug under -race, documented as a full incident-style write-up with root-cause analysis",
+      },
+      {
+        title:
+          "Chaos-tested for crash safety (SIGKILL mid-transaction) with zero lost or duplicated money, backed by Prometheus RED metrics and a provisioned Grafana dashboard",
+      },
+    ],
+    link: "https://github.com/NathanChung4/financial-transaction-engine",
+    buttonText: "View on GitHub",
+    image: financialTransactionEngineImage,
   },
   {
     company: "Personal Project",
